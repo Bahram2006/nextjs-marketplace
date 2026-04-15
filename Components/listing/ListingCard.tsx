@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Listing } from "@/features/listing/listing.types";
 
 type Props = {
@@ -6,20 +7,38 @@ type Props = {
 
 export default function ListingCard({ listing }: Props) {
   return (
-    <div className="border rounded-2xl overflow-hidden shadow hover:shadow-lg transition">
-      <img
-        src={listing.images[0]}
-        alt={listing.title}
-        className="w-full h-48 object-cover"
-      />
+    <Link href={`/listing/${listing.id}`}>
+      <div className="bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 cursor-pointer group">
+        
+        {/* Image */}
+        <div className="overflow-hidden">
+          <img
+            src={listing.images[0]}
+            alt={listing.title}
+            className="w-full h-48 object-cover group-hover:scale-105 transition duration-300"
+          />
+        </div>
 
-      <div className="p-4">
-        <h2 className="text-lg font-semibold">{listing.title}</h2>
+        {/* Content */}
+        <div className="p-4 space-y-2">
+          
+          {/* Title */}
+          <h2 className="text-lg font-semibold line-clamp-1">
+            {listing.title}
+          </h2>
 
-        <p className="text-gray-500 text-sm">{listing.location}</p>
+          {/* Location */}
+          <p className="text-gray-500 text-sm">
+            📍 {listing.location}
+          </p>
 
-        <p className="text-xl font-bold mt-2">${listing.price}</p>
+          {/* Price */}
+          <p className="text-xl font-bold text-blue-600">
+            ${listing.price}
+          </p>
+
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
