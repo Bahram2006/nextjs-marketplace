@@ -4,4 +4,5 @@ export type Listing = {
   price: number;
   location: string;
   images: string[];
+  description?: string; // 👈 goş!
 };
