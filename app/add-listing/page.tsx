@@ -1,28 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import { saveListing } from "@/lib/storage";
+import { useRouter } from "next/navigation";
 
 export default function AddListingPage() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState("");
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const newListing = {
-      id: Date.now().toString(),
-      title,
-      price: Number(price),
-      location,
-      images: [image],
-    };
-
-    console.log("NEW LISTING:", newListing);
-
-    alert("Listing added! 🔥");
+  const newListing = {
+    id: Date.now().toString(),
+    title,
+    price: Number(price),
+    location,
+    images: [image],
+    description: "",
   };
+
+  saveListing(newListing);
+
+  router.push("/");
+};
 
   return (
     <div className="max-w-xl mx-auto py-10">
