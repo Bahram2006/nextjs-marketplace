@@ -1,15 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import { Search, User, Plus } from "lucide-react";
 
-export default function Navbar() {
+type Props = {
+  onSearch: (value: string) => void;
+};
+
+export default function Navbar({ onSearch }: Props) {
+  const [query, setQuery] = useState("");
+
   return (
     <header className="w-full border-b bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between p-4 gap-4">
         
         {/* LOGO */}
         <div className="text-xl font-bold cursor-pointer">
-          TM Market
+          TM Market 🚀
         </div>
 
         {/* SEARCH */}
@@ -18,6 +25,11 @@ export default function Navbar() {
           <input
             type="text"
             placeholder="Search listings..."
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              onSearch(e.target.value);
+            }}
             className="bg-transparent outline-none px-2 w-full"
           />
         </div>

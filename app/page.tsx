@@ -1,9 +1,22 @@
+"use client";
+
+import { useState } from "react";
+import Navbar from "@/components/layout/Navbar";
 import ListingGrid from "@/features/listing/components/ListingGrid";
 import { listings } from "@/features/listing/data/listing.data";
 
 export default function Home() {
+  const [search, setSearch] = useState("");
+
+  const filteredListings = listings.filter((item) =>
+    item.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div>
+      {/* NAVBAR */}
+      <Navbar onSearch={setSearch} />
+
       {/* HERO */}
       <div className="py-16 text-center">
         <h1 className="text-5xl font-bold mb-4">
@@ -16,7 +29,7 @@ export default function Home() {
       </div>
 
       {/* LISTINGS */}
-      <ListingGrid listings={listings} />
+      <ListingGrid listings={filteredListings} />
     </div>
   );
 }
