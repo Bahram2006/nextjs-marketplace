@@ -9,7 +9,7 @@ export default function Navbar() {
         
         {/* LOGO */}
         <div className="text-xl font-bold cursor-pointer">
-          TM Market 🚀
+          TM Market
         </div>
 
         {/* SEARCH */}
