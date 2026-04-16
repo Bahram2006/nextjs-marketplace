@@ -1,4 +1,7 @@
-import { listings } from "@/features/listing/listing.data";
+"use client";
+
+import { useState } from "react";
+import { listings } from "@/features/listing/data/listing.data";
 
 type Props = {
   params: {
@@ -8,7 +11,11 @@ type Props = {
 
 export default function ListingDetailPage({ params }: Props) {
   const listing = listings.find(
-    (item) => item.id === Number(params.id)
+    (item) => item.id === params.id
+  );
+
+  const [selectedImage, setSelectedImage] = useState(
+    listing?.images[0]
   );
 
   if (!listing) {
@@ -16,24 +23,46 @@ export default function ListingDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="p-10">
+    <div className="py-10 max-w-5xl mx-auto">
+      
+      {/* MAIN IMAGE */}
       <img
-        src={listing.images[0]}
+        src={selectedImage}
         alt={listing.title}
-        className="w-full max-w-md rounded-xl"
+        className="w-full h-[400px] object-cover rounded-2xl"
       />
 
-      <h1 className="text-2xl font-bold mt-4">
+      {/* THUMBNAILS */}
+      <div className="flex gap-3 mt-4 overflow-x-auto">
+        {listing.images.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            onClick={() => setSelectedImage(img)}
+            className={`w-24 h-20 object-cover rounded-lg cursor-pointer border ${
+              selectedImage === img ? "border-black" : "border-transparent"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* INFO */}
+      <h1 className="text-3xl font-bold mt-6">
         {listing.title}
       </h1>
 
-      <p className="text-gray-500">{listing.location}</p>
+      <p className="text-gray-500 mt-2">
+        {listing.location}
+      </p>
 
-      <p className="text-xl font-semibold mt-2">
+      <p className="text-2xl font-bold mt-4">
         ${listing.price}
       </p>
 
-      <p className="mt-4">{listing.description}</p>
+      <p className="mt-6 text-gray-700">
+        {listing.description || "No description provided."}
+      </p>
+
     </div>
   );
 }

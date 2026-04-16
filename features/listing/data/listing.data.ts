@@ -30,3 +30,8 @@ export const listings: Listing[] = [
     images: ["https://picsum.photos/300/203"],
   },
 ];
+images: [
+  "https://picsum.photos/300/200",
+  "https://picsum.photos/300/201",
+  "https://picsum.photos/300/202",
+]
