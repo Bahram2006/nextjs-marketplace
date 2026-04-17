@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import ListingGrid from "@/features/listing/components/ListingGrid";
 import { listings as staticListings } from "@/features/listing/data/listing.data";
@@ -12,7 +12,19 @@ export default function Home() {
   const [location, setLocation] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-  // 🔥 listings state (localStorage + static)
+  // ✅ DEBOUNCE STATE
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  // ✅ DEBOUNCE EFFECT
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // listings state
   const [listings] = useState<Listing[]>(() => {
     if (typeof window === "undefined") return staticListings;
 
@@ -25,9 +37,11 @@ export default function Home() {
     return staticListings;
   });
 
-  // 🔥 FILTER SYSTEM
+  // ✅ FILTER (debouncedSearch ulan!)
   const filteredListings = listings.filter((item: Listing) => {
-    const matchSearch = item.title.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = item.title
+      .toLowerCase()
+      .includes(debouncedSearch.toLowerCase()); // 🔥 FIX
 
     const matchLocation = location
       ? item.location.toLowerCase().includes(location.toLowerCase())
@@ -38,6 +52,7 @@ export default function Home() {
     return matchSearch && matchLocation && matchPrice;
   });
 
+  // SORT
   const sortedListings = [...filteredListings].sort((a, b) => {
     if (sort === "price_asc") return a.price - b.price;
     if (sort === "price_desc") return b.price - a.price;
@@ -49,13 +64,14 @@ export default function Home() {
     <div>
       <Navbar onSearch={setSearch} />
 
-      <div className="max-w-7xl mx-auto px-4 flex gap-4 mb-6">
+      {/* 🔥 SINGLE FILTER BAR */}
+      <div className="max-w-7xl mx-auto px-4 flex gap-4 mt-6 mb-10">
         <input
           type="text"
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="border p-2 rounded-lg w-full max-w-xs"
+          className="border p-2 rounded-lg flex-1"
         />
 
         <input
@@ -63,8 +79,19 @@ export default function Home() {
           placeholder="Max Price"
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
-          className="border p-2 rounded-lg w-full max-w-xs"
+          className="border p-2 rounded-lg flex-1"
         />
+
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="border p-2 rounded-lg"
+        >
+          <option value="">Sort</option>
+          <option value="price_asc">⬆ Price</option>
+          <option value="price_desc">⬇ Price</option>
+          <option value="newest">🆕 New</option>
+        </select>
       </div>
 
       {/* HERO */}
@@ -76,38 +103,15 @@ export default function Home() {
         </p>
       </div>
 
-      {/* FILTER BAR 🔥 */}
-      <div className="max-w-7xl mx-auto px-4 flex gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="border p-2 rounded-lg w-full max-w-xs"
-        />
-
-        <input
-          type="number"
-          placeholder="Max Price"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          className="border p-2 rounded-lg w-full max-w-xs"
-        />
-      </div>
-
-      <select
-        value={sort}
-        onChange={(e) => setSort(e.target.value)}
-        className="border p-2 rounded-lg"
-      >
-        <option value="">Sort By</option>
-        <option value="price_asc">Price: Low → High</option>
-        <option value="price_desc">Price: High → Low</option>
-        <option value="newest">Newest</option>
-      </select>
-
       {/* LISTINGS */}
-      <ListingGrid listings={sortedListings} />
+      {sortedListings.length === 0 ? (
+        <div className="text-center py-20">
+          <h2 className="text-2xl font-semibold mb-2">No results found 😢</h2>
+          <p className="text-gray-500">Try changing your filters or search</p>
+        </div>
+      ) : (
+        <ListingGrid listings={sortedListings} />
+      )}
     </div>
   );
 }
