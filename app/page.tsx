@@ -13,10 +13,9 @@ export default function Home() {
   const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // ✅ DEBOUNCE STATE
+  // ✅ debounce
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
-  // ✅ DEBOUNCE EFFECT
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -25,7 +24,7 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // ✅ LOADING SIMULATION
+  // ✅ fake loading
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -34,21 +33,18 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // listings state
+  // ✅ listings (localStorage + static)
   const [listings] = useState<Listing[]>(() => {
     if (typeof window === "undefined") return staticListings;
 
     const saved = localStorage.getItem("listings");
-
-    if (saved) {
-      return [...JSON.parse(saved), ...staticListings];
-    }
-
-    return staticListings;
+    return saved
+      ? [...JSON.parse(saved), ...staticListings]
+      : staticListings;
   });
 
-  // ✅ FILTER
-  const filteredListings = listings.filter((item: Listing) => {
+  // ✅ filter
+  const filteredListings = listings.filter((item) => {
     const matchSearch = item.title
       .toLowerCase()
       .includes(debouncedSearch.toLowerCase());
@@ -64,7 +60,7 @@ export default function Home() {
     return matchSearch && matchLocation && matchPrice;
   });
 
-  // ✅ SORT
+  // ✅ sort
   const sortedListings = [...filteredListings].sort((a, b) => {
     if (sort === "price_asc") return a.price - b.price;
     if (sort === "price_desc") return b.price - a.price;
@@ -73,17 +69,23 @@ export default function Home() {
   });
 
   return (
-    <div>
+    <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white transition">
+      
       <Navbar onSearch={setSearch} />
 
-      {/* 🔥 FILTER BAR */}
+      {/* FILTER BAR */}
       <div className="max-w-7xl mx-auto px-4 flex gap-4 mt-6 mb-10">
         <input
           type="text"
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="border p-2 rounded-lg flex-1"
+          className="
+            border p-2 rounded-lg flex-1
+            bg-white dark:bg-zinc-900
+            border-gray-200 dark:border-gray-700
+            text-black dark:text-white
+          "
         />
 
         <input
@@ -91,13 +93,23 @@ export default function Home() {
           placeholder="Max Price"
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
-          className="border p-2 rounded-lg flex-1"
+          className="
+            border p-2 rounded-lg flex-1
+            bg-white dark:bg-zinc-900
+            border-gray-200 dark:border-gray-700
+            text-black dark:text-white
+          "
         />
 
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="border p-2 rounded-lg"
+          className="
+            border p-2 rounded-lg
+            bg-white dark:bg-zinc-900
+            border-gray-200 dark:border-gray-700
+            text-black dark:text-white
+          "
         >
           <option value="">Sort</option>
           <option value="price_asc">⬆ Price</option>
@@ -112,7 +124,7 @@ export default function Home() {
           Find Anything You Want 🚀
         </h1>
 
-        <p className="text-gray-500 text-lg mb-8">
+        <p className="text-gray-500 dark:text-gray-400 text-lg mb-8">
           Buy and sell products easily
         </p>
       </div>
@@ -123,7 +135,7 @@ export default function Home() {
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="bg-gray-200 animate-pulse h-64 rounded-xl"
+              className="bg-gray-200 dark:bg-zinc-800 animate-pulse h-64 rounded-xl"
             />
           ))}
         </div>
@@ -132,13 +144,13 @@ export default function Home() {
           <h2 className="text-2xl font-semibold mb-2">
             No results found 😢
           </h2>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             Try changing your filters or search
           </p>
         </div>
       ) : (
-        <ListingGrid listings={sortedListings} loading={loading} />
+        <ListingGrid listings={sortedListings} />
       )}
-    </div>
+    </main>
   );
 }
