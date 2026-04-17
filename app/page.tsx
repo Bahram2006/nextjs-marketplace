@@ -7,6 +7,7 @@ import { listings as staticListings } from "@/features/listing/data/listing.data
 import { Listing } from "@/features/listing/types/listing.types";
 
 export default function Home() {
+  const [sort, setSort] = useState("");
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -35,6 +36,13 @@ export default function Home() {
     const matchPrice = maxPrice ? item.price <= Number(maxPrice) : true;
 
     return matchSearch && matchLocation && matchPrice;
+  });
+
+  const sortedListings = [...filteredListings].sort((a, b) => {
+    if (sort === "price_asc") return a.price - b.price;
+    if (sort === "price_desc") return b.price - a.price;
+    if (sort === "newest") return Number(b.id) - Number(a.id);
+    return 0;
   });
 
   return (
@@ -87,8 +95,19 @@ export default function Home() {
         />
       </div>
 
+      <select
+        value={sort}
+        onChange={(e) => setSort(e.target.value)}
+        className="border p-2 rounded-lg"
+      >
+        <option value="">Sort By</option>
+        <option value="price_asc">Price: Low → High</option>
+        <option value="price_desc">Price: High → Low</option>
+        <option value="newest">Newest</option>
+      </select>
+
       {/* LISTINGS */}
-      <ListingGrid listings={filteredListings} />
+      <ListingGrid listings={sortedListings} />
     </div>
   );
 }
