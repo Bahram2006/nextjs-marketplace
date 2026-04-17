@@ -1,14 +1,28 @@
 "use client";
 
 import ListingCard from "./ListingCard";
+import ListingSkeleton from "./ListingSkeleton";
 import { Listing } from "../types/listing.types";
 import { motion } from "framer-motion";
 
 type Props = {
   listings: Listing[];
+  loading?: boolean;
 };
 
-export default function ListingGrid({ listings }: Props) {
+export default function ListingGrid({ listings, loading }: Props) {
+
+  // 🔥 ŞU ÝERE GOÝULÝAR
+  if (loading) {
+    return (
+      <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <ListingSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
@@ -31,7 +45,6 @@ export default function ListingGrid({ listings }: Props) {
             visible: { opacity: 1, y: 0 },
           }}
           transition={{ duration: 0.4 }}
-          className="h-full" // 🔥 goş
         >
           <ListingCard listing={listing} />
         </motion.div>

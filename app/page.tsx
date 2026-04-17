@@ -137,7 +137,7 @@ export default function Home() {
           </p>
         </div>
       ) : (
-        <ListingGrid listings={sortedListings} />
+        <ListingGrid listings={sortedListings} loading={loading} />
       )}
     </div>
   );
