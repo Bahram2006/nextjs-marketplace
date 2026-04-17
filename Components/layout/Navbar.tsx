@@ -13,7 +13,12 @@ export default function Navbar({ onSearch }: Props) {
   const [query, setQuery] = useState("");
 
   return (
-    <header className="w-full border-b bg-white sticky top-0 z-50">
+    <header className="
+  w-full sticky top-0 z-50
+  bg-white/80 backdrop-blur-lg
+  border-b
+  shadow-sm
+">
       <div className="max-w-7xl mx-auto flex items-center justify-between p-4 gap-4">
         
         {/* LOGO */}
