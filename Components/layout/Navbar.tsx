@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, User, Plus, Heart } from "lucide-react";
 import Link from "next/link";
 
+
 type Props = {
   onSearch: (value: string) => void;
 };
